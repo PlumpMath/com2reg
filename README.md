@@ -1,7 +1,7 @@
 com2reg  
 =======  
 
-This tool creates regitry scripts (.reg files) for registering .NET assemblies and native libraries for COM interop.  
+This tool creates registry scripts (.reg files) for registering .NET assemblies and native libraries for COM interop.  
 
 Unlike regasm /regfile, com2reg handles registry changes that can made by user-defined methods marked with the COMRegisterFunction attribute.  
   
