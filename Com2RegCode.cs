@@ -138,7 +138,13 @@ namespace NKhil.Tools.Com2Reg
                     NativeRegistry.CurrentUser.CreateSubKey(overrideRootKeyName + @"\HKEY_CURRENT_USER")))
                 {
                     RegisterAssemblies(regAsm, assembliesToRegister, options.SetCodeBase);
-                    RegisterComLibraries(comLibrariesToRegister);
+
+                    using (var oleAut32 = new OleAut32LibraryHandle())
+                    {
+                        oleAut32.OaEnablePerUserTLibRegistration();
+
+                        RegisterComLibraries(comLibrariesToRegister);
+                    }
                 }
 
                 using (RegistryKey overrideRootKey = Registry.CurrentUser.OpenSubKey(overrideRootKeyName))

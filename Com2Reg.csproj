@@ -78,6 +78,7 @@
     <Compile Include="CommandLine\Option.cs" />
     <Compile Include="CommandLine\Output.cs" />
     <Compile Include="Com2Reg.cs" />
+    <Compile Include="Interop\OleAut32LibraryHandle.cs" />
     <Compile Include="Interop\SafeRegistryOverride.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Com2RegOptions.cs" />
