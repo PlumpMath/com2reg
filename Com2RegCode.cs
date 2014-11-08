@@ -276,7 +276,7 @@ namespace NKhil.Tools.Com2Reg
                                 string formattedBinaryData = string.Join(
                                     ",", binaryData.Select(b => b.ToString("X2")).ToArray());
 
-                                valueTypeAndData = string.Format("multiStringData:{0}", formattedBinaryData);
+                                valueTypeAndData = string.Format("hex:{0}", formattedBinaryData);
                                 break;
 
                             default:
