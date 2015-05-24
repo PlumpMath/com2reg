@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace NKhil.Tools.Com2Reg
 {
-    internal class AssemblyResolver
+    internal sealed class AssemblyResolver
     {
         #region Fields
 
@@ -18,10 +18,10 @@ namespace NKhil.Tools.Com2Reg
         internal AssemblyResolver(string assemblyPaths)
         {
             m_assemblyPaths = !string.IsNullOrEmpty(assemblyPaths)
-                ? assemblyPaths.Split(new[] {';'})
+                ? assemblyPaths.Split(';')
                 : null;
 
-            AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += ResolveAssembly;
+            AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
         }
 
         #endregion
@@ -34,24 +34,24 @@ namespace NKhil.Tools.Com2Reg
 
             Assembly assembly;
             if (m_assemblyPaths == null)
-                assembly = Assembly.ReflectionOnlyLoad(AppDomain.CurrentDomain.ApplyPolicy(assemblyName));
+                assembly = Assembly.LoadFrom(AppDomain.CurrentDomain.ApplyPolicy(assemblyName));
             else
             {
                 AssemblyName name = new AssemblyName(assemblyName);
                 assemblyName = name.Name;
 
                 string dllAssemblyFileName = assemblyName + ".dll";
-                assembly = m_assemblyPaths.Select(path => path + @"\" + dllAssemblyFileName)
+                assembly = m_assemblyPaths.Select(path => Path.Combine(path, dllAssemblyFileName))
                     .Where(File.Exists)
-                    .Select(Assembly.ReflectionOnlyLoadFrom)
+                    .Select(Assembly.LoadFrom)
                     .FirstOrDefault();
 
                 if (assembly == null)
                 {
                     string exeAssemblyFileName = assemblyName + ".exe";
-                    assembly = m_assemblyPaths.Select(lstPath => lstPath + @"\" + exeAssemblyFileName)
+                    assembly = m_assemblyPaths.Select(lstPath => Path.Combine(lstPath, exeAssemblyFileName))
                         .Where(File.Exists)
-                        .Select(Assembly.ReflectionOnlyLoadFrom)
+                        .Select(Assembly.LoadFrom)
                         .FirstOrDefault();
                 }
             }

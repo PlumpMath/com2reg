@@ -48,15 +48,13 @@ namespace NKhil.Tools.Com2Reg
                     Assembly assembly;
                     try
                     {
-                        if (!string.IsNullOrEmpty(options.AssembliesPath))
-                            assembly = Assembly.ReflectionOnlyLoadFrom(assemblyName);
-                        else
-                            assembly = Assembly.LoadFrom(assemblyName);
+                        assembly = Assembly.LoadFrom(assemblyName);
                     }
                     catch (BadImageFormatException ex)
                     {
                         throw new ApplicationException(
-                            string.Format("Failed to load '{0}' because it is neither a valid .NET assembly, nor a native {1}-bit COM library", assemblyName, IntPtr.Size * 8),
+                            string.Format("Failed to load '{0}' because it is neither a valid .NET assembly, nor a native {1}-bit COM library", assemblyName,
+                                IntPtr.Size*8),
                             ex);
                     }
                     catch (FileNotFoundException ex)
@@ -191,6 +189,26 @@ namespace NKhil.Tools.Com2Reg
                 }
                 catch (TargetInvocationException ex)
                 {
+                    ReflectionTypeLoadException reflectionTypeLoadException = ex.InnerException as ReflectionTypeLoadException;
+
+                    if (reflectionTypeLoadException != null)
+                    {
+                        Output.WriteError("The following exceptions were thrown while loading the types in the assembly:");
+
+                        Exception[] loaderExceptions = reflectionTypeLoadException.LoaderExceptions;
+                        for (int i = 0; i < loaderExceptions.Length; i++)
+                        {
+                            try
+                            {
+                                Output.WriteError(string.Format("Exception[{0}] = {1}", i, loaderExceptions[i]));
+                            }
+                            catch (Exception innerException)
+                            {
+                                Output.WriteError(string.Format("Exception[{0}] ==>> {1}", i, innerException));
+                            }
+                        }
+                    }
+
                     throw new ApplicationException(
                         string.Format("An error occurred inside the user defined Register functions in {0}", assembly.CodeBase),
                         ex);

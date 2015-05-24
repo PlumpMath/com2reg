@@ -19,7 +19,7 @@ namespace NKhil.Tools.Com2Reg.CommandLine
 
         internal static void WriteError(Exception e)
         {
-            WriteError(e.Message);
+            WriteError(e.ToString());
         }
 
         internal static void WriteError(string message)
